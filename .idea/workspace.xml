@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="99b33875-d271-4a4c-9400-332cea9d7160" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/blue.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/red.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/color_detect.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/object_tracking.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/optical_flow.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/color_detect.py" afterPath="$PROJECT_DIR$/color_detect.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/object_tracking.py" afterPath="$PROJECT_DIR$/object_tracking.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="engr421.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,10 +27,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="object_tracking.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="object_tracking.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/object_tracking.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="78" column="6" selection-start="2651" selection-end="2651" vertical-scroll-proportion="3.8028169" vertical-offset="54" max-vertical-offset="1512">
+            <state line="41" column="33" selection-start="1517" selection-end="1517" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1476">
               <folding>
                 <element signature="e#24#34#0" expanded="true" />
               </folding>
@@ -40,19 +38,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="colorfilter.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/ros/packages/Rover2014/software/demos/colorfilter.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="37" column="53" selection-start="1336" selection-end="1336" vertical-scroll-proportion="0.0" vertical-offset="554" max-vertical-offset="1152">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="optical_flow.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/optical_flow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="33" selection-start="89" selection-end="89" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1134">
+            <state line="5" column="33" selection-start="89" selection-end="89" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="1152">
               <folding />
             </state>
           </provider>
@@ -61,18 +50,29 @@
       <file leaf-file-name="blob_detection.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/ros/packages/Rover2014/software/demos/blob_detection.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="67" column="18" selection-start="2592" selection-end="2659" vertical-scroll-proportion="0.0" vertical-offset="835" max-vertical-offset="1332">
+            <state line="67" column="18" selection-start="2592" selection-end="2659" vertical-scroll-proportion="0.0" vertical-offset="747" max-vertical-offset="1332">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="color_detect.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="color_detect.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/color_detect.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="51" column="75" selection-start="1862" selection-end="1893" vertical-scroll-proportion="0.0" vertical-offset="691" max-vertical-offset="1260">
+            <state line="51" column="27" selection-start="1733" selection-end="1733" vertical-scroll-proportion="0.19685039" vertical-offset="843" max-vertical-offset="1548">
               <folding>
                 <element signature="e#24#34#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="colorfilter.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/colorfilter.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="36" column="35" selection-start="1288" selection-end="1288" vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="1188">
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -98,8 +98,9 @@
       <list>
         <option value="$PROJECT_DIR$/optical_flow.py" />
         <option value="$USER_HOME$/ros/packages/Rover2014/software/demos/colorfilter.py" />
-        <option value="$PROJECT_DIR$/color_detect.py" />
         <option value="$PROJECT_DIR$/object_tracking.py" />
+        <option value="$PROJECT_DIR$/colorfilter.py" />
+        <option value="$PROJECT_DIR$/color_detect.py" />
       </list>
     </option>
   </component>
@@ -162,7 +163,7 @@
     <property name="last_opened_file_path" value="$USER_HOME$/ros/packages/Rover2014/software/demos/colorfilter.py" />
     <property name="FullScreen" value="false" />
   </component>
-  <component name="RunManager" selected="Python.object_tracking">
+  <component name="RunManager" selected="Python.color_detect">
     <configuration default="false" name="object_tracking" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -194,6 +195,24 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="engr421" />
       <option name="SCRIPT_NAME" value="$USER_HOME$/ros/packages/Rover2014/software/demos/colorfilter.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="colorfilter (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="engr421" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/colorfilter.py" />
       <option name="PARAMETERS" value="" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
@@ -338,15 +357,17 @@
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
-    <list size="3">
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Python.color_detect" />
       <item index="1" class="java.lang.String" itemvalue="Python.object_tracking" />
       <item index="2" class="java.lang.String" itemvalue="Python.colorfilter" />
+      <item index="3" class="java.lang.String" itemvalue="Python.colorfilter (1)" />
     </list>
     <recent_temporary>
-      <list size="2">
-        <item index="0" class="java.lang.String" itemvalue="Python.object_tracking" />
-        <item index="1" class="java.lang.String" itemvalue="Python.colorfilter" />
+      <list size="3">
+        <item index="0" class="java.lang.String" itemvalue="Python.colorfilter (1)" />
+        <item index="1" class="java.lang.String" itemvalue="Python.object_tracking" />
+        <item index="2" class="java.lang.String" itemvalue="Python.colorfilter" />
       </list>
     </recent_temporary>
   </component>
@@ -383,17 +404,17 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3262987" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25110456" sideWeight="0.6672078" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25036928" sideWeight="0.66775244" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33279222" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33224756" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3262987" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -411,6 +432,29 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/optical_flow.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="33" selection-start="89" selection-end="89" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="1152">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/ros/packages/Rover2014/software/demos/blob_detection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="67" column="18" selection-start="2592" selection-end="2659" vertical-scroll-proportion="0.0" vertical-offset="1206" max-vertical-offset="1350">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/color_detect.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="75" selection-start="1862" selection-end="1893" vertical-scroll-proportion="0.0" vertical-offset="691" max-vertical-offset="1260">
+          <folding>
+            <element signature="e#24#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/object_tracking.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="57" column="71" selection-start="1788" selection-end="1788" vertical-scroll-proportion="0.0" vertical-offset="612" max-vertical-offset="1728">
@@ -462,6 +506,22 @@
         <state />
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/ros/packages/Rover2014/software/demos/colorfilter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="28" selection-start="1010" selection-end="1010" vertical-scroll-proportion="0.047244094" vertical-offset="504" max-vertical-offset="1152">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/object_tracking.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="33" selection-start="1517" selection-end="1517" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1476">
+          <folding>
+            <element signature="e#24#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/optical_flow.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="33" selection-start="89" selection-end="89" vertical-scroll-proportion="0.0" vertical-offset="270" max-vertical-offset="1152">
@@ -476,25 +536,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/color_detect.py">
+    <entry file="file://$PROJECT_DIR$/colorfilter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="75" selection-start="1862" selection-end="1893" vertical-scroll-proportion="0.0" vertical-offset="691" max-vertical-offset="1260">
+        <state line="36" column="35" selection-start="1288" selection-end="1288" vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="1188">
           <folding>
-            <element signature="e#24#34#0" expanded="true" />
+            <element signature="e#0#10#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/ros/packages/Rover2014/software/demos/colorfilter.py">
+    <entry file="file://$PROJECT_DIR$/color_detect.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="53" selection-start="1336" selection-end="1336" vertical-scroll-proportion="0.0" vertical-offset="554" max-vertical-offset="1152">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/object_tracking.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="78" column="6" selection-start="2651" selection-end="2651" vertical-scroll-proportion="3.8028169" vertical-offset="54" max-vertical-offset="1512">
+        <state line="51" column="27" selection-start="1733" selection-end="1733" vertical-scroll-proportion="0.19685039" vertical-offset="843" max-vertical-offset="1548">
           <folding>
             <element signature="e#24#34#0" expanded="true" />
           </folding>

@@ -27,8 +27,6 @@ def get_threshold_image(frame, lower, upper):
 " the color is the color of the overlayed box the tracker is an array of previous
 " entries for various colors
 """
-
-
 def contour_detect(thresh_image, overlay_image, color=(0,255,0), tracker=None):
     #make a copy so that the contour get doesnt mess stuff up
     count_image = thresh_image.copy()

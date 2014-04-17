@@ -1,6 +1,7 @@
 __author__ = 'brenemal'
 import cv2
 import numpy as np
+import math
 
 def nothing(n):
     pass
@@ -8,17 +9,17 @@ def nothing(n):
 """
 " See the comments in the color filter code since it is exactly the same code
 """
-def getThresholdImage(frame, lower, upper):
+def get_threshold_image(frame, lower, upper):
     #convert frame to HSV to make it easier to work with
-    frameImage = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    frame_image = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     #use your custom function to filter by color range
     #default :[110,50,50] [130,255,255]
-    lowerRed = np.array(lower)
-    upperRed = np.array(upper)
-    imageThresh = cv2.inRange(frameImage, lowerRed, upperRed)
+    lower = np.array(lower)
+    upper = np.array(upper)
+    image_thresh = cv2.inRange(frame_image, lower, upper)
     #bitwise and adds the color back
-    #imageThresh = cv2.bitwise_and(frameImage, frameImage, mask=imageThresh)
-    return imageThresh
+    #image_thresh = cv2.bitwise_and(frame_image, frame_image, mask=image_thresh)
+    return image_thresh
 
 
 """
@@ -27,39 +28,54 @@ def getThresholdImage(frame, lower, upper):
 " the color is the color of the overlayed box the tracker is an array of previous
 " entries for various colors
 """
-
-def contourDetect(threshImage, overlayImage, color=(0,255,0), tracker=None):
+def contour_detect(thresh_image, overlay_image, color=(0,255,0), tracker=None):
     #make a copy so that the contour get doesnt mess stuff up
-    countImage = threshImage.copy()
+    count_image = thresh_image.copy()
     #get the contours from the treshold image copy
-    contours,hierarchy = cv2.findContours(countImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(count_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     #foreach contour found draw a box around the area
+    area = 0
+    rect = 0
     for cnt in contours:
-        #get a simple bounding rect
-        x,y,w,h = cv2.boundingRect(cnt)
         #get rid of really small boxes
-        if cv2.contourArea(cnt) > 10000:
-            cv2.rectangle(overlayImage,(x,y),(x+w,y+h),color,10)
+        narea = cv2.contourArea(cnt)
+        if narea    > area:
+            rect = cv2.boundingRect(cnt)
+            area = narea
+    return rect
+
 
 def main():
-    red_raw = cv2.imread("red.jpg")
-    blue_raw = cv2.imread("blue.jpg")
-
-    red_raw = cv2.resize(red_raw, (0,0), fx=0.25, fy=0.25)
-    blue_raw = cv2.resize(blue_raw, (0,0), fx=0.25, fy=0.25)
-
-    #generate the threshold images
-    blueThresh = getThresholdImage(blue_raw, [100, 90, 30], [120, 255, 255])
-    redThresh = getThresholdImage(red_raw, [120, 100, 60], [255, 255, 255])
-
-     #generate the contour detection for every color
-    contourDetect(blueThresh, blue_raw, (255, 0, 0))
-    contourDetect(redThresh, red_raw, (0, 0, 255))
-
-    cv2.imshow("Blue_raw", blue_raw)
-    cv2.imshow("Blue", blueThresh)
-    cv2.imshow("Red_raw", red_raw)
-    cv2.imshow("Red", redThresh)
-    cv2.waitKey(0)
+    #video = cv2.VideoCapture(1)
+    video = cv2.VideoCapture("capture.avi")
+    #grab a frame for calibration
+    _, frame = video.read()
+    while 1:
+        _, frame = video.read()
+        #generate the threshold images
+        blue_thresh = get_threshold_image(frame,  [100, 150, 150], [120, 255, 255])
+        red_thresh = get_threshold_image(frame, [0, 100, 60], [10, 255, 255])
+        blue_raw = frame.copy()
+         #generate the contour detection for every color
+        blue = contour_detect(blue_thresh, blue_raw, (255, 0, 0))
+        red = contour_detect(red_thresh, blue_raw, (0, 0, 255))
+        print blue, red
+        try:
+            bx = blue[0] + (blue[2]/2)
+            cv2.line(blue_raw, (bx, blue[1]), (bx, 0), (255, 0, 0), 5)
+        except TypeError:
+            pass
+        try:
+            rx = red[0] + (red[2]/2)
+            cv2.line(blue_raw, (rx, red[1]), (rx, 0), (0, 0, 255), 5)
+        except TypeError:
+            pass
+        cv2.imshow("detected", blue_raw)
+        cv2.imshow("Blue", blue_thresh)
+        cv2.imshow("Red", red_thresh)
+        key = cv2.waitKey(0)
+        if key == 113 or key == 1048689:
+            break
+        print key
 
 main()
