@@ -45,11 +45,46 @@ def contour_detect(thresh_image, overlay_image, color=(0,255,0), tracker=None):
     return rect
 
 
+def find_arena_edge(frame):
+    w, h, d = frame.shape
+    start = w / 2
+    initial = frame[start][-20]
+    print "started with", initial
+    left = right = 0
+    for shift in range(1, w / 2):
+        if left == 0:
+            delta_left = int(initial[0]) - int(frame[start - shift][-20][0])
+            if abs(delta_left) > 100:
+                left = shift
+                print "ended with ", frame[start - shift][-20]
+        if right == 0:
+            delta_right = int(initial[0]) - int(frame[start + shift][-20][0])
+            if abs(delta_right) > 100:
+                right = shift
+                print "ended with ", initial, frame[start + shift][-20]
+        initial = frame[start + shift][-20]
+    print frame.shape
+    #print (start+right, frame.shape[0]-20), (start-left, frame.shape[0]-20)
+    cv2.line(frame, (start + right, frame.shape[0] - 20), (start - left, frame.shape[0] - 20), (255, 0, 0), 5)
+    cv2.imshow("test", frame)
+
+
 def main():
     #video = cv2.VideoCapture(1)
     video = cv2.VideoCapture("capture.avi")
     #grab a frame for calibration
     _, frame = video.read()
+    #find_arena_edge(frame)
+    im = frame.copy()
+    imgray = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
+    imgray = cv2.blur(imgray, (10, 10))
+    ret, thresh = cv2.threshold(imgray, 127, 255, 0)
+    contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    for cnt in contours:
+        x,y,w,h = cv2.boundingRect(cnt)
+        cv2.rectangle(im,(x,y),(x+w,y+h),(0,255,0),2)
+    cv2.imshow("cont", im)
+
     while 1:
         _, frame = video.read()
         #generate the threshold images
@@ -76,6 +111,5 @@ def main():
         key = cv2.waitKey(0)
         if key == 113 or key == 1048689:
             break
-        print key
 
 main()
