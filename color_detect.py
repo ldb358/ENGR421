@@ -108,11 +108,8 @@ def calc_real_y(initx, fl, fr, delta_x, projx, projy):
     right_pos = fr(projy)
     left_pos = fl(projy)
     delta = right_pos-left_pos
-    print "y", projy, "right", right_pos, "left", left_pos
     #get the percent of the total board
     percent = float(projx-left_pos)/delta
-    print "projx", projx
-    print "delta", delta
     return percent*delta_x+initx
 
 
@@ -167,22 +164,14 @@ def main():
     mr = (corners[3][1] - corners[1][1])/(corners[3][0] - corners[1][0])
     br = corners[3][1] - corners[3][0]*mr
     fr = lambda x: (x-br)/mr
-    ml = float(corners[0][0]-corners[2][0])/float(corners[0][1]-corners[2][1])
+    ml = (corners[0][1]-corners[2][1])/(corners[0][0]-corners[2][0])
     bl = corners[2][1] - corners[2][0]*ml
     fl = lambda y: (y-bl)/ml
-    print "fr", fr(25)
+    print "fr", round(fr(25), 0), round(fr(472), 0)
+    print "fl", round(fl(25), 0), round(fl(467), 0)
     print corners
     print calc_real_y(corners[2][0], fl, fr, delta[0], corners[1][0], corners[1][1])
-    draw_corners(im, corners)
 
-    #keep old contours
-    """
-    for cnt in contours:
-        x,y,w,h = cv2.boundingRect(cnt)
-        cv2.rectangle(im,(x,y),(x+w,y+h),(0,255,0),2)
-    """
-    cv2.imshow("cont", im)
-    cv2.waitKey(0)
     while 1:
         _, frame = video.read()
         #generate the threshold images
@@ -195,12 +184,17 @@ def main():
         print blue, red
         try:
             bx = blue[0] + (blue[2]/2)
-            cv2.line(blue_raw, (bx, blue[1]), (bx, 0), (255, 0, 0), 5)
+            base_x = calc_real_y(corners[2][0], fl, fr, delta[0], bx, blue[0])
+            cv2.line(blue_raw, (bx, blue[1]), (int(base_x), int(corners[2][1])), (255, 0, 0), 5)
         except TypeError:
             pass
         try:
             rx = red[0] + (red[2]/2)
-            cv2.line(blue_raw, (rx, red[1]), (rx, 0), (0, 0, 255), 5)
+            base_x = calc_real_y(corners[2][0], fl, fr, delta[0], rx, red[0])
+            print base_x, corners[2][1]
+            print rx, red[1]
+            cv2.line(blue_raw, (rx, red[1]), (int(base_x), int(corners[2][1])), (0, 0, 255), 5)
+
         except TypeError:
             pass
 
