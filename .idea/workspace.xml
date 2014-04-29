@@ -4,6 +4,7 @@
     <list default="true" id="99b33875-d271-4a4c-9400-332cea9d7160" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/test1.mp4" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/color_detect.py" afterPath="$PROJECT_DIR$/color_detect.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="engr421.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,7 +30,7 @@
       <file leaf-file-name="object_tracking.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/object_tracking.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="27" selection-start="449" selection-end="449" vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="1377">
+            <state line="27" column="28" selection-start="942" selection-end="942" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1458">
               <folding />
             </state>
           </provider>
@@ -38,7 +39,7 @@
       <file leaf-file-name="optical_flow.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/optical_flow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="33" selection-start="89" selection-end="89" vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="1071">
+            <state line="5" column="33" selection-start="89" selection-end="89" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="1134">
               <folding />
             </state>
           </provider>
@@ -47,7 +48,7 @@
       <file leaf-file-name="blob_detection.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/ros/packages/Rover2014/software/demos/blob_detection.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="63" column="22" selection-start="2530" selection-end="2530" vertical-scroll-proportion="0.0" vertical-offset="664" max-vertical-offset="1258">
+            <state line="10" column="40" selection-start="227" selection-end="227" vertical-scroll-proportion="0.0" vertical-offset="180" max-vertical-offset="1350">
               <folding />
             </state>
           </provider>
@@ -56,7 +57,7 @@
       <file leaf-file-name="color_detect.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/color_detect.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="152" column="31" selection-start="5121" selection-end="5407" vertical-scroll-proportion="0.7371134" vertical-offset="2298" max-vertical-offset="3655">
+            <state line="76" column="4" selection-start="2519" selection-end="2519" vertical-scroll-proportion="0.04639175" vertical-offset="1350" max-vertical-offset="4896">
               <folding>
                 <element signature="e#24#34#0" expanded="true" />
               </folding>
@@ -67,7 +68,7 @@
       <file leaf-file-name="colorfilter.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/colorfilter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="32" selection-start="1285" selection-end="1285" vertical-scroll-proportion="0.0" vertical-offset="511" max-vertical-offset="1105">
+            <state line="38" column="4" selection-start="1332" selection-end="1383" vertical-scroll-proportion="0.0" vertical-offset="576" max-vertical-offset="1170">
               <folding />
             </state>
           </provider>
@@ -100,10 +101,9 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-2" />
     <option name="y" value="25" />
-    <option name="width" value="1370" />
-    <option name="height" value="745" />
+    <option name="width" value="1366" />
+    <option name="height" value="743" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -131,6 +131,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -151,12 +152,11 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="recentsLimit" value="5" />
-    <property name="last_opened_file_path" value="$USER_HOME$/ros/packages/Rover2014/software/demos/colorfilter.py" />
+    <property name="last_opened_file_path" value="$USER_HOME$/ros/rover_ws/src/roscv" />
     <property name="FullScreen" value="false" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -421,7 +421,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-2" y="25" width="1370" height="745" extended-state="6" />
+    <frame x="0" y="25" width="1366" height="743" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -523,6 +523,25 @@
         <state line="30" column="28" selection-start="1010" selection-end="1010" vertical-scroll-proportion="0.047244094" vertical-offset="504" max-vertical-offset="1152" />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/red.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/ros/packages/Rover2014/software/demos/blob_detection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="40" selection-start="227" selection-end="227" vertical-scroll-proportion="0.0" vertical-offset="156" max-vertical-offset="1258">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/colorfilter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="4" selection-start="1332" selection-end="1383" vertical-scroll-proportion="0.0" vertical-offset="511" max-vertical-offset="1105">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/optical_flow.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="33" selection-start="89" selection-end="89" vertical-scroll-proportion="0.0" vertical-offset="270" max-vertical-offset="1152">
@@ -532,33 +551,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/object_tracking.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="27" selection-start="449" selection-end="449" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1476">
+        <state line="27" column="28" selection-start="942" selection-end="942" vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="1377">
           <folding />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/colorfilter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="32" selection-start="1285" selection-end="1285" vertical-scroll-proportion="0.0" vertical-offset="162" max-vertical-offset="1188">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/ros/packages/Rover2014/software/demos/blob_detection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="22" selection-start="2530" selection-end="2530" vertical-scroll-proportion="0.0" vertical-offset="664" max-vertical-offset="1258">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red.jpg">
-      <provider selected="true" editor-type-id="images">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/color_detect.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="152" column="31" selection-start="5121" selection-end="5407" vertical-scroll-proportion="0.7371134" vertical-offset="2298" max-vertical-offset="3655">
+        <state line="76" column="4" selection-start="2519" selection-end="2519" vertical-scroll-proportion="0.04639175" vertical-offset="1350" max-vertical-offset="4896">
           <folding>
             <element signature="e#24#34#0" expanded="true" />
           </folding>

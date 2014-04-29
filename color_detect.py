@@ -7,6 +7,15 @@ def nothing(n):
     pass
 
 """
+" TODO List:
+" Serial Comunication
+" Scoring threshold
+" Implement deeper stratagies
+" Test on someone elses computer
+"""
+
+
+"""
 " See the comments in the color filter code since it is exactly the same code
 """
 def get_threshold_image(frame, lower, upper):
@@ -39,7 +48,7 @@ def contour_detect(thresh_image, overlay_image, color=(0,255,0), tracker=None):
     for cnt in contours:
         #get rid of really small boxes
         narea = cv2.contourArea(cnt)
-        if narea    > area:
+        if narea > area:
             rect = cv2.boundingRect(cnt)
             area = narea
     return rect
@@ -120,23 +129,16 @@ def draw_corners(im, corners):
     cv2.line(im, tuple(corners[2]), tuple(corners[0]), (100, 255, 100), 10)
 
 
-def main():
-    #video = cv2.VideoCapture(1)
-    video = cv2.VideoCapture("capture.avi")
-    #video = cv2.VideoCapture("test.avi")
-    #grab a frame for calibration
-    _, frame = video.read()
-    #find_arena_edge(frame)
+def find_corners(frame):
     im = frame.copy()
-    imgray = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
+    imgray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
     imgray = cv2.blur(imgray, (10, 10))
-
     thresh = cv2.Canny(imgray, 100, 100, apertureSize=3)
-    lines = cv2.HoughLinesP(thresh, 1, math.pi/180, 70, minLineLength=30, maxLineGap=50)
-
+    lines = cv2.HoughLinesP(thresh, 1, math.pi / 180, 70, minLineLength=30, maxLineGap=50)
     borders = np.zeros(thresh.shape, np.uint8)
-    max_dy = [[0, lines[0][1]], [0, lines[0][1]]]
-    for line in lines[0]:
+    max_dy = [[0, lines[0][0]], [0, lines[0][0]]]
+    for line in lines:
+        line = line[0]
         p1 = tuple(line[:2])
         p2 = tuple(line[2:])
         cv2.line(borders, p1, p2, (255, 0, 0), 5)
@@ -145,32 +147,88 @@ def main():
             if abs(max_dy[0][1][1] - p1[1]) > 100:
                 max_dy[1] = max_dy[0]
             max_dy[0] = [dy, line]
-
-    delta = [abs(max_dy[0][1][0]-max_dy[1][1][2]), abs(max_dy[0][1][2]-max_dy[1][1][0])]
-    cv2.line(im, tuple(max_dy[0][1][:2]), tuple(max_dy[0][1][2:]), (255, 0, 0), 5)
-    cv2.line(im, tuple(max_dy[1][1][:2]), tuple(max_dy[1][1][2:]), (255, 0, 0), 5)
-    #contours, hierarchy = cv2.findContours(borders, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    cv2.imshow("test", borders)
-
-    f_r = (delta[0]-delta[1])/(max_dy[0][1][0]-max_dy[0][1][2])
+    cv2.imshow("borders", borders)
+    cv2.waitKey(0)
+    delta = [abs(max_dy[0][1][0] - max_dy[1][1][2]), abs(max_dy[0][1][2] - max_dy[1][1][0])]
+    f_r = (delta[0] - delta[1]) / (max_dy[0][1][0] - max_dy[0][1][2])
     #top-left, top-right, bottom-left, bottom-right,
     corners = np.float32([
         [max_dy[0][1][2], max_dy[0][1][3]],
-        [max_dy[0][1][2]+delta[1]+max_dy[0][1][3]*f_r, max_dy[0][1][3]],
+        [max_dy[0][1][2] + delta[1] + max_dy[0][1][3] * f_r, max_dy[0][1][3]],
         [max_dy[0][1][0], max_dy[0][1][1]],
         [max_dy[1][1][2], max_dy[1][1][3]],
 
     ])
-    mr = (corners[3][1] - corners[1][1])/(corners[3][0] - corners[1][0])
-    br = corners[3][1] - corners[3][0]*mr
-    fr = lambda x: (x-br)/mr
-    ml = (corners[0][1]-corners[2][1])/(corners[0][0]-corners[2][0])
-    bl = corners[2][1] - corners[2][0]*ml
-    fl = lambda y: (y-bl)/ml
-    print "fr", round(fr(25), 0), round(fr(472), 0)
-    print "fl", round(fl(25), 0), round(fl(467), 0)
-    print corners
-    print calc_real_y(corners[2][0], fl, fr, delta[0], corners[1][0], corners[1][1])
+    return corners, delta
+
+
+def get_edge_functions(corners):
+    divisor_r = (corners[3][0] - corners[1][0])
+    if divisor_r == 0:
+        divisor_r = .0001
+    mr = (corners[3][1] - corners[1][1]) / divisor_r
+    br = corners[3][1] - corners[3][0] * mr
+    fr = lambda x: (x - br) / mr
+    divisor_l = (corners[0][0] - corners[2][0])
+    if divisor_l == 0:
+        divisor_l = .001
+    ml = (corners[0][1] - corners[2][1]) / divisor_l
+    bl = corners[2][1] - corners[2][0] * ml
+    fl = lambda y: (y - bl) / ml
+    return fl, fr
+
+
+def manual_corners(frame):
+    im = frame.copy()
+    #top-left, top-right, bottom-left, bottom-right
+    corners = np.float32([
+        [50, 50],
+        [200, 50],
+        [50, 500],
+        [200, 500],
+
+    ])
+    cv2.namedWindow("settings")
+    cv2.createTrackbar('top-left', 'settings', 50, im.shape[1], nothing)
+    cv2.createTrackbar('top-right', 'settings', 200, im.shape[1], nothing)
+    cv2.createTrackbar('top-y', 'settings', 50, im.shape[0], nothing)
+    cv2.createTrackbar('bottom-left', 'settings', 50, im.shape[1], nothing)
+    cv2.createTrackbar('bottom-right', 'settings', 200, im.shape[1], nothing)
+    cv2.createTrackbar('bottom-y', 'settings', 500, im.shape[0], nothing)
+    k = 0
+    while k != 32:
+        test = im.copy()
+        corners = np.float32([
+            [cv2.getTrackbarPos('top-left', 'settings'), cv2.getTrackbarPos('top-y', 'settings')],
+            [cv2.getTrackbarPos('top-right', 'settings'), cv2.getTrackbarPos('top-y', 'settings')],
+            [cv2.getTrackbarPos('bottom-left', 'settings'), cv2.getTrackbarPos('bottom-y','settings')],
+            [cv2.getTrackbarPos('bottom-right', 'settings'), cv2.getTrackbarPos('bottom-y','settings')],
+        ])
+        draw_corners(test, corners)
+        cv2.imshow("Calibrate", test)
+        k = cv2.waitKey(0) & 0xFF
+    cv2.destroyWindow("Calibrate")
+    cv2.destroyWindow("settings")
+    delta = [abs(int(corners[2][0])-int(corners[3][0])), abs(int(corners[0][1])-int(corners[2 ][1]))]
+    return corners, delta
+
+
+def main():
+    #video = cv2.VideoCapture(1)
+    video = cv2.VideoCapture("capture.avi")
+    #video = cv2.VideoCapture("test.avi")
+    #grab a frame for calibration
+    _, frame = video.read()
+    #find_arena_edge(frame)
+    corners, delta = find_corners(frame)
+    im = frame.copy()
+    draw_corners(im, corners)
+    cv2.imshow("Press space to manually calibrate", im)
+    k = cv2.waitKey(0) & 0xFF
+    cv2.destroyWindow("Press space to manually calibrate")
+    if k == 32:
+        corners, delta = manual_corners(frame)
+    fl, fr = get_edge_functions(corners)
 
     while 1:
         _, frame = video.read()
@@ -181,30 +239,29 @@ def main():
          #generate the contour detection for every color
         blue = contour_detect(blue_thresh, blue_raw, (255, 0, 0))
         red = contour_detect(red_thresh, blue_raw, (0, 0, 255))
-        print blue, red
+        pucks = {"red": None, "blue": None}
         try:
             bx = blue[0] + (blue[2]/2)
             base_x = calc_real_y(corners[2][0], fl, fr, delta[0], bx, blue[0])
             cv2.line(blue_raw, (bx, blue[1]), (int(base_x), int(corners[2][1])), (255, 0, 0), 5)
+            pucks["blue"] = base_x
         except TypeError:
             pass
         try:
             rx = red[0] + (red[2]/2)
             base_x = calc_real_y(corners[2][0], fl, fr, delta[0], rx, red[0])
-            print base_x, corners[2][1]
-            print rx, red[1]
             cv2.line(blue_raw, (rx, red[1]), (int(base_x), int(corners[2][1])), (0, 0, 255), 5)
-
+            pucks["red"] = base_x
         except TypeError:
             pass
 
         draw_corners(blue_raw, corners)
-
         cv2.imshow("detected", blue_raw)
-        cv2.imshow("Blue", blue_thresh)
-        cv2.imshow("Red", red_thresh)
-        key = cv2.waitKey(0)
+        #cv2.imshow("Blue", blue_thresh)
+        #cv2.imshow("Red", red_thresh)
+        key = cv2.waitKey(0)  & 0xFF
         if key == 113 or key == 1048689:
             break
+    cv2.destroyAllWindows()
 
 main()
