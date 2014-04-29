@@ -2,6 +2,9 @@ __author__ = 'brenemal'
 import cv2
 import numpy as np
 import math
+import serial
+from serial.tools import list_ports
+
 
 def nothing(n):
     pass
@@ -13,6 +16,39 @@ def nothing(n):
 " Implement deeper stratagies
 " Test on someone elses computer
 """
+
+
+class SerialHandler(object):
+    baud = 9600
+    timeout = 3
+    port = ""
+    ser = None
+
+    def __init__(self, baud=9600, timeout=3):
+        self.baud = baud
+        self.timeout = timeout
+        for port in list(self.list_serial_ports()):
+            try:
+                ser = serial.Serial(port, self.baud, timeout=self.timeout)
+                print "Port Found:", port
+                self.port = port
+                self.ser = ser
+            except serial.SerialException:
+                pass
+
+    def list_serial_ports(self):
+        for port in list_ports.comports():
+            yield port[0]
+
+    def write(self, char):
+        self.ser.write(char)
+
+    def read(self, count):
+        return self.ser.read(count)
+
+    def valid(self):
+        return not self.ser is None
+
 
 
 """
@@ -41,7 +77,7 @@ def contour_detect(thresh_image, overlay_image, color=(0,255,0), tracker=None):
     #make a copy so that the contour get doesnt mess stuff up
     count_image = thresh_image.copy()
     #get the contours from the treshold image copy
-    contours, hierarchy = cv2.findContours(count_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    _, contours, hierarchy = cv2.findContours(count_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     #foreach contour found draw a box around the area
     area = 0
     rect = 0
@@ -119,7 +155,7 @@ def calc_real_y(initx, fl, fr, delta_x, projx, projy):
     delta = right_pos-left_pos
     #get the percent of the total board
     percent = float(projx-left_pos)/delta
-    return percent*delta_x+initx
+    return percent*delta_x+initx, percent
 
 
 def draw_corners(im, corners):
@@ -127,6 +163,10 @@ def draw_corners(im, corners):
     cv2.line(im, tuple(corners[1]), tuple(corners[3]), (0, 255, 0), 10)
     cv2.line(im, tuple(corners[3]), tuple(corners[2]), (255, 255, 0), 10)
     cv2.line(im, tuple(corners[2]), tuple(corners[0]), (100, 255, 100), 10)
+
+def draw_score_zones(im, score):
+    cv2.line(im, tuple(score[0]), tuple(score[1]), (0, 255, 255), 2)
+    cv2.line(im, tuple(score[2]), tuple(score[3]), (100, 255, 100), 2)
 
 
 def find_corners(frame):
@@ -147,8 +187,6 @@ def find_corners(frame):
             if abs(max_dy[0][1][1] - p1[1]) > 100:
                 max_dy[1] = max_dy[0]
             max_dy[0] = [dy, line]
-    cv2.imshow("borders", borders)
-    cv2.waitKey(0)
     delta = [abs(max_dy[0][1][0] - max_dy[1][1][2]), abs(max_dy[0][1][2] - max_dy[1][1][0])]
     f_r = (delta[0] - delta[1]) / (max_dy[0][1][0] - max_dy[0][1][2])
     #top-left, top-right, bottom-left, bottom-right,
@@ -176,6 +214,47 @@ def get_edge_functions(corners):
     bl = corners[2][1] - corners[2][0] * ml
     fl = lambda y: (y - bl) / ml
     return fl, fr
+
+
+def score_zones(frame, fl, fr):
+    im = frame.copy()
+    #top-left, top-right, bottom-left, bottom-right
+    score_zone = np.float32([
+        [fl(10), 10],
+        [fr(10), 10],
+        [fl(200), 200],
+        [fr(200), 200]
+    ])
+    cv2.namedWindow("settings")
+    cv2.createTrackbar('top-y', 'settings', 50, im.shape[0], nothing)
+    cv2.createTrackbar("delta-top", "settings", 150, 300, nothing)
+    cv2.createTrackbar('bottom-y', 'settings', 500, im.shape[0], nothing)
+    cv2.createTrackbar("delta-bottom", "settings", 150, 300, nothing)
+    k = 0
+    while k != 32:
+        test = im.copy()
+        top = cv2.getTrackbarPos('top-y', 'settings')
+        dtop = cv2.getTrackbarPos('delta-top', 'settings')
+        bottom = cv2.getTrackbarPos('bottom-y', 'settings')
+        dbot = cv2.getTrackbarPos('delta-bottom', 'settings')
+        score_zone = np.float32([
+            [fl(top), top],
+            [fr(top+(150-dtop)), top+(150-dtop)],
+            [fl(bottom), bottom],
+            [fr(bottom+(150-dbot)), bottom+(150-dbot)]
+        ])
+        draw_score_zones(test, score_zone)
+        cv2.imshow("Calibrate", test)
+        k = cv2.waitKey(1) & 0xFF
+    st = (score_zone[1][1]-score_zone[0][1])/(score_zone[1][0]-score_zone[0][0])
+    score_top = lambda x, y: y < score_zone[0][1]+st*(x-score_zone[0][0])
+
+    sb = (score_zone[3][1]-score_zone[2][1])/(score_zone[3][0]-score_zone[2][0])
+    score_bottom = lambda x, y: y > score_zone[2][1]+sb*(x-score_zone[2][0])
+
+    cv2.destroyWindow("Calibrate")
+    cv2.destroyWindow("settings")
+    return score_zone, score_top, score_bottom
 
 
 def manual_corners(frame):
@@ -206,7 +285,7 @@ def manual_corners(frame):
         ])
         draw_corners(test, corners)
         cv2.imshow("Calibrate", test)
-        k = cv2.waitKey(0) & 0xFF
+        k = cv2.waitKey(1) & 0xFF
     cv2.destroyWindow("Calibrate")
     cv2.destroyWindow("settings")
     delta = [abs(int(corners[2][0])-int(corners[3][0])), abs(int(corners[0][1])-int(corners[2 ][1]))]
@@ -222,6 +301,10 @@ def main():
     #find_arena_edge(frame)
     corners, delta = find_corners(frame)
     im = frame.copy()
+    ser = SerialHandler(115200)
+
+    if not ser.valid():
+        print "No serial device detected. Starting test mode."
     draw_corners(im, corners)
     cv2.imshow("Press space to manually calibrate", im)
     k = cv2.waitKey(0) & 0xFF
@@ -229,7 +312,7 @@ def main():
     if k == 32:
         corners, delta = manual_corners(frame)
     fl, fr = get_edge_functions(corners)
-
+    score_zone, score_top, score_bottom = score_zones(im, fl, fr)
     while 1:
         _, frame = video.read()
         #generate the threshold images
@@ -240,26 +323,39 @@ def main():
         blue = contour_detect(blue_thresh, blue_raw, (255, 0, 0))
         red = contour_detect(red_thresh, blue_raw, (0, 0, 255))
         pucks = {"red": None, "blue": None}
+        blue_percent, red_percent = -1, -1
         try:
             bx = blue[0] + (blue[2]/2)
-            base_x = calc_real_y(corners[2][0], fl, fr, delta[0], bx, blue[0])
+            base_x, blue_percent = calc_real_y(corners[2][0], fl, fr, delta[0], bx, blue[0])
             cv2.line(blue_raw, (bx, blue[1]), (int(base_x), int(corners[2][1])), (255, 0, 0), 5)
             pucks["blue"] = base_x
         except TypeError:
             pass
         try:
             rx = red[0] + (red[2]/2)
-            base_x = calc_real_y(corners[2][0], fl, fr, delta[0], rx, red[0])
+            base_x, red_percent = calc_real_y(corners[2][0], fl, fr, delta[0], rx, red[0])
             cv2.line(blue_raw, (rx, red[1]), (int(base_x), int(corners[2][1])), (0, 0, 255), 5)
             pucks["red"] = base_x
         except TypeError:
             pass
 
+        if red_percent != -1:
+            print "red:", int(round(red_percent*255, 0))
+            if ser.valid():
+                 ser.write(chr(int(round(red_percent*255, 0))))
+        elif blue_percent != -1:
+            print int(round(blue_percent*255, 0))
+            if ser.valid():
+                ser.write(chr(int(round(blue_percent*255, 0))))
+        else:
+            print "no valid target"
+
         draw_corners(blue_raw, corners)
+        draw_score_zones(blue_raw, score_zone)
         cv2.imshow("detected", blue_raw)
         #cv2.imshow("Blue", blue_thresh)
         #cv2.imshow("Red", red_thresh)
-        key = cv2.waitKey(0)  & 0xFF
+        key = cv2.waitKey(1) & 0xFF
         if key == 113 or key == 1048689:
             break
     cv2.destroyAllWindows()

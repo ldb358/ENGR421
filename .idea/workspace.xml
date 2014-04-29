@@ -4,7 +4,6 @@
     <list default="true" id="99b33875-d271-4a4c-9400-332cea9d7160" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/test1.mp4" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/color_detect.py" afterPath="$PROJECT_DIR$/color_detect.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="engr421.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -57,7 +56,7 @@
       <file leaf-file-name="color_detect.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/color_detect.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="76" column="4" selection-start="2519" selection-end="2519" vertical-scroll-proportion="0.04639175" vertical-offset="1350" max-vertical-offset="4896">
+            <state line="361" column="0" selection-start="12771" selection-end="12771" vertical-scroll-proportion="2.2061856" vertical-offset="5642" max-vertical-offset="6624">
               <folding>
                 <element signature="e#24#34#0" expanded="true" />
               </folding>
@@ -558,7 +557,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/color_detect.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="76" column="4" selection-start="2519" selection-end="2519" vertical-scroll-proportion="0.04639175" vertical-offset="1350" max-vertical-offset="4896">
+        <state line="361" column="0" selection-start="12771" selection-end="12771" vertical-scroll-proportion="2.2061856" vertical-offset="5642" max-vertical-offset="6624">
           <folding>
             <element signature="e#24#34#0" expanded="true" />
           </folding>
