@@ -15,7 +15,6 @@ def nothing(n):
 
 """
 " TODO List:
-" Serial Comunication Testing
 " Scoring threshold
 " Implement deeper stratagies
 " Test on someone elses computer
@@ -123,7 +122,7 @@ def get_threshold_image(frame, lower, upper):
 " the color is the color of the overlayed box the tracker is an array of previous
 " entries for various colors
 """
-def contour_detect(thresh_image, overlay_image=None, color=(0, 255, 0), tracker=None):
+def contour_detect(thresh_image, previous):
     #make a copy so that the contour get doesnt mess stuff up
     count_image = thresh_image.copy()
     #get the contours from the treshold image copy
@@ -135,8 +134,10 @@ def contour_detect(thresh_image, overlay_image=None, color=(0, 255, 0), tracker=
         #get rid of really small boxes
         narea = cv2.contourArea(cnt)
         if narea > area:
-            rect = cv2.boundingRect(cnt)
-            area = narea
+            nrect = cv2.boundingRect(cnt)
+            if abs(nrect[0] - previous) < 20 or previous == -1:
+                area = narea
+                rect = nrect
     return rect
 
 
@@ -474,7 +475,7 @@ def board_init(frame):
         draw_corners(im, corners)
         fl, fr = get_edge_functions(corners)
     score_zone, score_top, score_bottom = score_zones(im, fl, fr)
-    return corners, delta, fl, fr, frame, score_zone, y_crop
+    return corners, delta, fl, fr, frame, score_zone, score_top, score_bottom, y_crop
 
 
 spi = None
@@ -495,7 +496,7 @@ def main():
     else:
         print "No serial device detected. Starting test mode."
 
-    corners, delta, fl, fr, frame, score_zone, y_crop = board_init(frame)
+    corners, delta, fl, fr, frame, score_zone, score_top, score_bottom, y_crop = board_init(frame)
 
     #create a mask to remove background noise
     mask = np.zeros(frame.shape[:2], np.uint8)
@@ -507,6 +508,10 @@ def main():
         mask[i, fl(i):fr(i)] = 255
     #keep track of the previous point to avoid constant adjusting
     prev = 0
+    #keep track of previous puck position to prevent jumping to other objects on board
+    last_position = {"red": -1, "blue": -1}
+    #keep track of whether the puck is still live or not
+    puck_state = {'red': 1, 'blue': 1}
     while 1:
         _, frame = video.read()
         #crop the frame
@@ -518,33 +523,59 @@ def main():
         red_thresh = get_threshold_image(frame, [0, 100, 60], [10, 255, 255])
 
         #generate the contour detection for every color
-        blue = contour_detect(blue_thresh, frame, (255, 0, 0))
-        red = contour_detect(red_thresh, frame, (0, 0, 255))
+        blue = contour_detect(blue_thresh, last_position['blue'])
+        red = contour_detect(red_thresh, last_position['red'])
 
         # use this dict to make sure that we can keep track of which pucks are valid targets, this allows for better
         # strategies like marking pucks that have been scored, without a ton of messy logic
         pucks = {"red": None, "blue": None}
         blue_percent, red_percent = -1, -1
+
+        #get blue position information
         try:
             #get the x position of the center of the blue puck
             bx = blue[0] + (blue[2] / 2)
+
             #get the base_x and percentage the blue puck is along the x axis
             base_x, blue_percent = calc_real_y(corners[2][0], fl, fr, delta[0], bx, blue[1])
             #draw the line for visualization
             cv2.line(frame, (bx, blue[1]), (int(base_x), int(corners[2][1])), (255, 0, 0), 5)
+            last_position['blue'] = blue[0]
             pucks["blue"] = base_x
         except TypeError:
-            pass
+            pucks["blue"] = -1
+
+        #if the puck was not dead see if it is dead
+        if puck_state["blue"] > -1 and (score_top(bx, blue[1]+(blue[3]/2)) or score_bottom(bx, blue[1]+(blue[3]/2))):
+            puck_state["blue"] = -1
+        #check if the puck is about to be scoblue against us
+        if puck_state["blue"] > -1 and score_bottom(bx, blue[1]+(blue[3]/2)-50):
+            puck_state["blue"] = 0
+
+
+        #get red puck information
         try:
+            #the center of the red puck
             rx = red[0] + (red[2] / 2)
+            #get the red_percentage so we get get our position
             base_x, red_percent = calc_real_y(corners[2][0], fl, fr, delta[0], rx, red[1])
             cv2.line(frame, (rx, red[1]), (int(base_x), int(corners[2][1])), (0, 0, 255), 5)
+            last_position['red'] = red[0]
             pucks["red"] = base_x
         except TypeError:
-            pass
+            pucks["red"] = -1
+
+        #if the puck was not dead see if it is dead
+        if puck_state["red"] > -1 and (score_top(rx, red[1]+(red[3]/2)) or score_bottom(rx, red[1]+(red[3]/2))):
+            puck_state["red"] = -1
+        #check if the puck is about to be scored against us
+        if puck_state["red"] > -1 and score_bottom(rx, red[1]+(red[3]/2)-50):
+            puck_state["red"] = 0
+
+
         size = 0x9a
-        red_percent = -1
-        if red_percent != -1:
+        if red_percent != -1 and puck_state["blue"] != 0 and puck_state["red"] != -1:
+            print "firing on red"
             #print "red:", int(round(red_percent * 255, 0))
             char = size-int(round(red_percent * size, 0))
             red_char = char
@@ -554,9 +585,9 @@ def main():
                 spi.char = chr(char)
                 prev = char
                 pass
-
             #ser.write(chr(int(round(red_percent * 255, 0))))
-        elif blue_percent != -1:
+        elif blue_percent != -1 and puck_state["blue"] != -1:
+            print "firing on blue"
             #print "red:", int(round(blue_percent * 255, 0))
             char = size-int(round(blue_percent * size, 0))
             blue_char = char
