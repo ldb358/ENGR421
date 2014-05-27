@@ -4,6 +4,7 @@
     <list default="true" id="99b33875-d271-4a4c-9400-332cea9d7160" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/test1.mp4" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/color_detect.py" afterPath="$PROJECT_DIR$/color_detect.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="engr421.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -38,7 +39,7 @@
       <file leaf-file-name="optical_flow.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/optical_flow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="50" column="7" selection-start="1486" selection-end="1489" vertical-scroll-proportion="0.0" vertical-offset="777" max-vertical-offset="1152">
+            <state line="50" column="7" selection-start="1486" selection-end="1489" vertical-scroll-proportion="0.0" vertical-offset="900" max-vertical-offset="1152">
               <folding />
             </state>
           </provider>
@@ -56,7 +57,7 @@
       <file leaf-file-name="color_detect.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/color_detect.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="576" column="22" selection-start="20707" selection-end="20707" vertical-scroll-proportion="0.28198433" vertical-offset="10260" max-vertical-offset="11178">
+            <state line="604" column="19" selection-start="21840" selection-end="21840" vertical-scroll-proportion="0.32898173" vertical-offset="10746" max-vertical-offset="11700">
               <folding>
                 <element signature="e#24#34#0" expanded="true" />
               </folding>
@@ -149,7 +150,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -170,6 +170,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -575,7 +576,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/color_detect.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="576" column="22" selection-start="20707" selection-end="20707" vertical-scroll-proportion="0.28198433" vertical-offset="10260" max-vertical-offset="11178">
+        <state line="604" column="19" selection-start="21840" selection-end="21840" vertical-scroll-proportion="0.32898173" vertical-offset="10746" max-vertical-offset="11700">
           <folding>
             <element signature="e#24#34#0" expanded="true" />
           </folding>

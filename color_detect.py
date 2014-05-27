@@ -56,7 +56,7 @@ class SimpleSpi():
         self.spi = None
 
     def setup(self):
-        self.spi = SPI("/dev/ttyUSB0", 115200)
+        self.spi = SPI(self.port, 115200)
         print "Entering binmode: ",
         if self.spi.BBmode():
             print "OK."
@@ -280,7 +280,7 @@ def find_corners(frame):
         cv2.line(borders2, p1, p2, (255, 0, 0), 5)
         if not ((70 < angle < 110) or (-70 > angle > -110)):
             continue
-        print "got throug", angle
+        print "got through", angle
         cv2.line(borders, p1, p2, (255, 0, 0), 5)
         dy = abs(p2[1] - p1[1])
         if dy > max_dy[0][0] and p1[0] < mid:
@@ -423,6 +423,32 @@ def crop_frame(frame):
     return y_crop
 
 
+def click_corners(event,x,y,flags,param):
+    if event == 1:
+        l = len(param)
+        if l == 0:
+            #add the top left corner
+            param.append([x, y])
+        if l == 1:
+            #add the top right corners x with the same y as the top left
+            param.append([x, param[0][1]])
+        if l == 2:
+            #add the bottom lefts point
+            param.append([x, y])
+        if l == 3:
+            param.append([x, param[2][1]])
+            cv2.setTrackbarPos('top-left', 'settings', param[0][0])
+            cv2.setTrackbarPos('top-right', 'settings', param[1][0])
+            cv2.setTrackbarPos('top-y', 'settings', param[0][1])
+            cv2.setTrackbarPos('bottom-left', 'settings', param[2][0])
+            cv2.setTrackbarPos('bottom-right', 'settings', param[3][0])
+            cv2.setTrackbarPos('bottom-y', 'settings', param[2][1])
+            param = []
+
+
+        print x, y
+
+
 def manual_corners(frame):
     im = frame.copy()
     #top-left, top-right, bottom-left, bottom-right
@@ -431,9 +457,11 @@ def manual_corners(frame):
         [200, 50],
         [50, 500],
         [200, 500],
-
     ])
+    clicked_corners = []
     cv2.namedWindow("settings")
+    cv2.namedWindow("Calibrate")
+    cv2.setMouseCallback("Calibrate", click_corners, clicked_corners)
     cv2.createTrackbar('top-left', 'settings', 50, im.shape[1], nothing)
     cv2.createTrackbar('top-right', 'settings', 200, im.shape[1], nothing)
     cv2.createTrackbar('top-y', 'settings', 50, im.shape[0], nothing)
@@ -478,23 +506,24 @@ def board_init(frame):
     return corners, delta, fl, fr, frame, score_zone, score_top, score_bottom, y_crop
 
 
-spi = None
-USESERIAL = False
-def main():
-    #video = cv2.VideoCapture(1)
-    #video = cv2.VideoCapture("capture.avi")
-    #video = cv2.VideoCapture("test.avi")
-    video = cv2.VideoCapture("test_real.avi")
-    #grab a frame for calibration
-    _, frame = video.read()
 
+
+
+spi = None
+USESERIAL = True
+def main():
     if USESERIAL:
+        video = cv2.VideoCapture(1)
         #initalize the pirate bus in a sperate thread
         spi = SimpleSpi("/dev/ttyUSB0")
         t = threading.Thread(target=spi.setup)
         t.start()
     else:
+        video = cv2.VideoCapture("test_real.avi")
         print "No serial device detected. Starting test mode."
+
+    #grab a frame for calibration
+    _, frame = video.read()
 
     corners, delta, fl, fr, frame, score_zone, score_top, score_bottom, y_crop = board_init(frame)
 
@@ -544,12 +573,11 @@ def main():
             pucks["blue"] = base_x
         except TypeError:
             pucks["blue"] = -1
-
         #if the puck was not dead see if it is dead
-        if puck_state["blue"] > -1 and (score_top(bx, blue[1]+(blue[3]/2)) or score_bottom(bx, blue[1]+(blue[3]/2))):
+        if pucks["blue"] != -1 and puck_state["blue"] > -1 and (score_top(bx, blue[1]+(blue[3]/2)) or score_bottom(bx, blue[1]+(blue[3]/2))):
             puck_state["blue"] = -1
         #check if the puck is about to be scoblue against us
-        if puck_state["blue"] > -1 and score_bottom(bx, blue[1]+(blue[3]/2)-50):
+        if pucks["blue"] != -1 and puck_state["blue"] > -1 and score_bottom(bx, blue[1]+(blue[3]/2)-50):
             puck_state["blue"] = 0
 
 
@@ -559,43 +587,44 @@ def main():
             rx = red[0] + (red[2] / 2)
             #get the red_percentage so we get get our position
             base_x, red_percent = calc_real_y(corners[2][0], fl, fr, delta[0], rx, red[1])
-            cv2.line(frame, (rx, red[1]), (int(base_x), int(corners[2][1])), (0, 0, 255), 5)
+            rx2 = int(fl(red[1])+(fr(red[1])- fl(red[1]))*red_percent)
+            cv2.line(frame, (rx2, red[1]), (int(base_x), int(corners[2][1])), (0, 0, 255), 5)
             last_position['red'] = red[0]
             pucks["red"] = base_x
         except TypeError:
             pucks["red"] = -1
 
         #if the puck was not dead see if it is dead
-        if puck_state["red"] > -1 and (score_top(rx, red[1]+(red[3]/2)) or score_bottom(rx, red[1]+(red[3]/2))):
+        if pucks["red"] != -1 and puck_state["red"] > -1 and (score_top(rx, red[1]+(red[3]/2)) or score_bottom(rx, red[1]+(red[3]/2))):
             puck_state["red"] = -1
         #check if the puck is about to be scored against us
-        if puck_state["red"] > -1 and score_bottom(rx, red[1]+(red[3]/2)-50):
+        if pucks["red"] != -1 and puck_state["red"] > -1 and score_bottom(rx, red[1]+(red[3]/2)-50):
             puck_state["red"] = 0
 
-
-        size = 0x9a
+        right_offset = 12
+        size = 0xb4+right_offset
         if red_percent != -1 and puck_state["blue"] != 0 and puck_state["red"] != -1:
-            print "firing on red"
             #print "red:", int(round(red_percent * 255, 0))
             char = size-int(round(red_percent * size, 0))
             red_char = char
             cv2.putText(frame, str(red_char), (rx, red[1]), cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,0))
             #print char
-            if 0 < char < 256 and abs(prev-char) > 2 and USESERIAL:
-                spi.char = chr(char)
+            if 0 < char < 256 and abs(prev-char) > 1 and USESERIAL:
+                spi.char = chr(max(char-right_offset, 0))
                 prev = char
+                print "sent", char
                 pass
             #ser.write(chr(int(round(red_percent * 255, 0))))
         elif blue_percent != -1 and puck_state["blue"] != -1:
-            print "firing on blue"
             #print "red:", int(round(blue_percent * 255, 0))
             char = size-int(round(blue_percent * size, 0))
             blue_char = char
             cv2.putText(frame, str(blue_char), (bx, blue[1]), cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,0))
             #print char
-            if 0 < char < 256 and abs(prev-char) > 2 and USESERIAL:
-                spi.char = chr(char)
+            if 0 < char < 256 and abs(prev-char) > 1 and USESERIAL:
+                spi.char = chr(max(char-right_offset, 0))
                 prev = char
+                print "sent", char
                 pass
         else:
             print "no valid target"
