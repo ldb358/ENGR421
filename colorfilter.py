@@ -28,11 +28,11 @@ def getThresholdImage(frame, lower, upper):
 " can easily find the color spectrum that you want
 """
 def main():
-    cv2.namedWindow("setting", cv2.CV_WINDOW_AUTOSIZE)
-    cv2.namedWindow("Red", cv2.CV_WINDOW_AUTOSIZE)
+    cv2.namedWindow("setting")
+    cv2.namedWindow("Red")
     #create a cam that pulls from our cam source
-    #video = cv2.VideoCapture(1)
-    video = cv2.VideoCapture("capture.avi")
+    video = cv2.VideoCapture(1)
+    #video = cv2.VideoCapture("capture.avi")
     #[90,50, 50], [120, 255, 255] blue
     #[0,60, 60], [30, 255, 255] red
     #orange [7,90, 60], [30, 255, 255]

@@ -262,7 +262,7 @@ def find_corners(frame):
     imgray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
     imgray = cv2.blur(imgray, (10, 10))
     thresh = cv2.Canny(imgray, 100, 100, apertureSize=5)
-    cv2.imshow("canny", thresh)
+    #cv2.imshow("canny", thresh)
     lines = cv2.HoughLinesP(thresh, 1, math.pi / 180, 70, minLineLength=30, maxLineGap=50)
     borders = np.zeros(thresh.shape, np.uint8)
     max_dy = [[0, lines[0][0]], [0, lines[0][0]]]
@@ -365,18 +365,18 @@ def score_zones(frame, fl, fr):
         [fl(200), 200],
         [fr(200), 200]
     ])
-    cv2.namedWindow("settings")
-    cv2.createTrackbar('top-y', 'settings', 50, im.shape[0], nothing)
-    cv2.createTrackbar("delta-top", "settings", 150, 300, nothing)
-    cv2.createTrackbar('bottom-y', 'settings', 500, im.shape[0], nothing)
-    cv2.createTrackbar("delta-bottom", "settings", 150, 300, nothing)
+    cv2.createTrackbar('top-y', 'Calibrate', 50, im.shape[0], nothing)
+    cv2.createTrackbar("delta-top", "Calibrate", 150, 300, nothing)
+    cv2.createTrackbar('bottom-y', 'Calibrate', 500, im.shape[0], nothing)
+    cv2.createTrackbar("delta-bottom", "Calibrate", 150, 300, nothing)
     k = 0
     while k != 32:
         test = im.copy()
-        top = cv2.getTrackbarPos('top-y', 'settings')
-        dtop = cv2.getTrackbarPos('delta-top', 'settings')
-        bottom = cv2.getTrackbarPos('bottom-y', 'settings')
-        dbot = cv2.getTrackbarPos('delta-bottom', 'settings')
+        test = add_caption(test, "Select the score zones")
+        top = cv2.getTrackbarPos('top-y', 'Calibrate')
+        dtop = cv2.getTrackbarPos('delta-top', 'Calibrate')
+        bottom = cv2.getTrackbarPos('bottom-y', 'Calibrate')
+        dbot = cv2.getTrackbarPos('delta-bottom', 'Calibrate')
         score_zone = np.float32([
             [fl(top), top],
             [fr(top + (150 - dtop)), top + (150 - dtop)],
@@ -392,8 +392,6 @@ def score_zones(frame, fl, fr):
     sb = (score_zone[3][1] - score_zone[2][1]) / (score_zone[3][0] - score_zone[2][0])
     score_bottom = lambda x, y: y > score_zone[2][1] + sb * (x - score_zone[2][0])
 
-    cv2.destroyWindow("Calibrate")
-    cv2.destroyWindow("settings")
     return score_zone, score_top, score_bottom
 
 
@@ -407,18 +405,15 @@ def crop_frame(frame):
         [200, 500],
 
     ])
-    cv2.namedWindow("settings")
-    cv2.createTrackbar('crop', 'settings', 50, im.shape[1], nothing)
-
+    cv2.createTrackbar('crop', 'Calibrate', 50, im.shape[1], nothing)
+    im = add_caption(im, "Crop the frame so that the other robot isn't visible")
     k = 0
     while k != 32:
         test = im.copy()
-        y_crop = cv2.getTrackbarPos("crop", "settings")
+        y_crop = cv2.getTrackbarPos("crop", "Calibrate")
         cv2.line(test, (0, y_crop), (test.shape[1], y_crop), (255, 0, 0))
         cv2.imshow("Calibrate", test)
         k = cv2.waitKey(1) & 0xFF
-    cv2.destroyWindow("Calibrate")
-    cv2.destroyWindow("settings")
     delta = [abs(int(corners[2][0]) - int(corners[3][0])), abs(int(corners[0][1]) - int(corners[2][1]))]
     return y_crop
 
@@ -437,12 +432,12 @@ def click_corners(event,x,y,flags,param):
             param.append([x, y])
         if l == 3:
             param.append([x, param[2][1]])
-            cv2.setTrackbarPos('top-left', 'settings', param[0][0])
-            cv2.setTrackbarPos('top-right', 'settings', param[1][0])
-            cv2.setTrackbarPos('top-y', 'settings', param[0][1])
-            cv2.setTrackbarPos('bottom-left', 'settings', param[2][0])
-            cv2.setTrackbarPos('bottom-right', 'settings', param[3][0])
-            cv2.setTrackbarPos('bottom-y', 'settings', param[2][1])
+            cv2.setTrackbarPos('top-left', 'Calibrate', param[0][0])
+            cv2.setTrackbarPos('top-right', 'Calibrate', param[1][0])
+            cv2.setTrackbarPos('top-y', 'Calibrate', param[0][1])
+            cv2.setTrackbarPos('bottom-left', 'Calibrate', param[2][0])
+            cv2.setTrackbarPos('bottom-right', 'Calibrate', param[3][0])
+            cv2.setTrackbarPos('bottom-y', 'Calibrate', param[2][1])
             param = []
 
 
@@ -459,55 +454,65 @@ def manual_corners(frame):
         [200, 500],
     ])
     clicked_corners = []
-    cv2.namedWindow("settings")
-    cv2.namedWindow("Calibrate")
     cv2.setMouseCallback("Calibrate", click_corners, clicked_corners)
-    cv2.createTrackbar('top-left', 'settings', 50, im.shape[1], nothing)
-    cv2.createTrackbar('top-right', 'settings', 200, im.shape[1], nothing)
-    cv2.createTrackbar('top-y', 'settings', 50, im.shape[0], nothing)
-    cv2.createTrackbar('bottom-left', 'settings', 50, im.shape[1], nothing)
-    cv2.createTrackbar('bottom-right', 'settings', 200, im.shape[1], nothing)
-    cv2.createTrackbar('bottom-y', 'settings', 500, im.shape[0], nothing)
+    cv2.createTrackbar('top-left', 'Calibrate', 50, im.shape[1], nothing)
+    cv2.createTrackbar('top-right', 'Calibrate', 200, im.shape[1], nothing)
+    cv2.createTrackbar('top-y', 'Calibrate', 50, im.shape[0], nothing)
+    cv2.createTrackbar('bottom-left', 'Calibrate', 50, im.shape[1], nothing)
+    cv2.createTrackbar('bottom-right', 'Calibrate', 200, im.shape[1], nothing)
+    cv2.createTrackbar('bottom-y', 'Calibrate', 500, im.shape[0], nothing)
     k = 0
     while k != 32:
         test = im.copy()
         corners = np.float32([
-            [cv2.getTrackbarPos('top-left', 'settings'), cv2.getTrackbarPos('top-y', 'settings')],
-            [cv2.getTrackbarPos('top-right', 'settings'), cv2.getTrackbarPos('top-y', 'settings')],
-            [cv2.getTrackbarPos('bottom-left', 'settings'), cv2.getTrackbarPos('bottom-y', 'settings')],
-            [cv2.getTrackbarPos('bottom-right', 'settings'), cv2.getTrackbarPos('bottom-y', 'settings')],
+            [cv2.getTrackbarPos('top-left', 'Calibrate'), cv2.getTrackbarPos('top-y', 'Calibrate')],
+            [cv2.getTrackbarPos('top-right', 'Calibrate'), cv2.getTrackbarPos('top-y', 'Calibrate')],
+            [cv2.getTrackbarPos('bottom-left', 'Calibrate'), cv2.getTrackbarPos('bottom-y', 'Calibrate')],
+            [cv2.getTrackbarPos('bottom-right', 'Calibrate'), cv2.getTrackbarPos('bottom-y', 'Calibrate')],
         ])
         draw_corners(test, corners)
         cv2.imshow("Calibrate", test)
         k = cv2.waitKey(1) & 0xFF
-    cv2.destroyWindow("Calibrate")
-    cv2.destroyWindow("settings")
     delta = [abs(int(corners[2][0]) - int(corners[3][0])), abs(int(corners[0][1]) - int(corners[2][1]))]
     return corners, delta
 
+
+def add_caption(image, message):
+    extended = np.zeros((image.shape[0]+40, image.shape[1], 3), np.uint8)
+    extended[:-40, :, :] = image
+    cv2.rectangle(extended, (0, image.shape[0]), (image.shape[1], image.shape[0]+40), (255, 255, 255), -1)
+    cv2.putText(extended, message, (10, image.shape[0]+25), cv2.FONT_HERSHEY_COMPLEX, .5, (0, 0, 0))
+    return extended
+
 def board_init(frame):
+    cv2.namedWindow("Calibrate")
+    cv2.moveWindow("Calibrate", 100, 100)
     #crop the other robot off the arena
     y_crop = crop_frame(frame)
     frame = frame[y_crop:, :]
+    cv2.destroyWindow("Calibrate")
+    cv2.namedWindow("Calibrate")
+    cv2.moveWindow("Calibrate", 100, 100)
     #find_arena_edge(frame)
     corners, delta, lines = find_corners(frame)
     fl, fr = get_edge_functions(corners)
     im = frame.copy()
     draw_corners(im, corners)
-    cv2.imshow("Press space to manually calibrate", im)
+    im = add_caption(im, "Press space to manually calibrate, press any other key to keep calibration")
+    cv2.imshow("Calibrate", im)
     k = cv2.waitKey(0) & 0xFF
-    cv2.destroyWindow("Press space to manually calibrate")
     if k == 32:
         corners, delta = manual_corners(frame)
         im = frame
         draw_corners(im, corners)
         fl, fr = get_edge_functions(corners)
+    cv2.destroyWindow("Calibrate")
+    cv2.namedWindow("Calibrate")
+    cv2.moveWindow("Calibrate", 100, 100)
     score_zone, score_top, score_bottom = score_zones(im, fl, fr)
+    cv2.destroyWindow("Calibrate")
     return corners, delta, fl, fr, frame, score_zone, score_top, score_bottom, y_crop
-
-
-
-
+1
 
 spi = None
 USESERIAL = True
@@ -548,7 +553,7 @@ def main():
         frame = cv2.bitwise_and(frame, frame, mask=mask)
 
         #generate the threshold images based on color
-        blue_thresh = get_threshold_image(frame, [100, 150, 150], [120, 255, 255])
+        blue_thresh = get_threshold_image(frame, [100, 150, 30], [120, 255, 255])
         red_thresh = get_threshold_image(frame, [0, 100, 60], [10, 255, 255])
 
         #generate the contour detection for every color
@@ -601,8 +606,9 @@ def main():
         if pucks["red"] != -1 and puck_state["red"] > -1 and score_bottom(rx, red[1]+(red[3]/2)-50):
             puck_state["red"] = 0
 
-        right_offset = 12
-        size = 0xb4+right_offset
+        right_offset = lambda x: int(16 -  (char/255.0)*16.0)
+        #size = 0xb0+right_offset
+        size = 255
         if red_percent != -1 and puck_state["blue"] != 0 and puck_state["red"] != -1:
             #print "red:", int(round(red_percent * 255, 0))
             char = size-int(round(red_percent * size, 0))
@@ -610,7 +616,8 @@ def main():
             cv2.putText(frame, str(red_char), (rx, red[1]), cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,0))
             #print char
             if 0 < char < 256 and abs(prev-char) > 1 and USESERIAL:
-                spi.char = chr(max(char-right_offset, 0))
+                print right_offset(char)
+                spi.char = chr(max(char-right_offset(char), 0))
                 prev = char
                 print "sent", char
                 pass
@@ -622,7 +629,7 @@ def main():
             cv2.putText(frame, str(blue_char), (bx, blue[1]), cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,0))
             #print char
             if 0 < char < 256 and abs(prev-char) > 1 and USESERIAL:
-                spi.char = chr(max(char-right_offset, 0))
+                spi.char = chr(max(char-right_offset(char), 0))
                 prev = char
                 print "sent", char
                 pass
@@ -639,6 +646,8 @@ def main():
             cv2.destroyAllWindows()
             sys.exit(1)
             break
+        if key == 32:
+            cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 
